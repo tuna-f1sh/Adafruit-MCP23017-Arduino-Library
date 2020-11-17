@@ -18,6 +18,9 @@
 #define Wire TinyWireM
 #endif
 
+#define MCP_GPIOA 0
+#define MCP_GPIOB 1
+
 /*!
  * @brief MCP23017 main class
  */
@@ -32,6 +35,7 @@ public:
   uint8_t digitalRead(uint8_t p);
 
   void writeGPIOAB(uint16_t);
+  void writeGPIO(uint8_t b, uint8_t mask);
   uint16_t readGPIOAB();
   uint8_t readGPIO(uint8_t b);
 

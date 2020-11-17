@@ -35,6 +35,8 @@
 #include "WProgram.h"
 #endif
 
+#define DEBUG 1
+
 // minihelper to keep Arduino backward compatibility
 static inline void wiresend(uint8_t x, TwoWire *theWire) {
 #if ARDUINO >= 100
@@ -193,11 +195,30 @@ uint8_t Adafruit_MCP23017::readGPIO(uint8_t b) {
  * implementing a multiplexed matrix and want to get a decent refresh rate.
  */
 void Adafruit_MCP23017::writeGPIOAB(uint16_t ba) {
+  if (DEBUG) {
+    SerialUSB.print("mcp writeGPIOAB(): ");
+    SerialUSB.print(i2caddr);
+    SerialUSB.print(":");
+    SerialUSB.println(ba);
+  }
   _wire->beginTransmission(MCP23017_ADDRESS | i2caddr);
   wiresend(MCP23017_GPIOA, _wire);
   wiresend(ba & 0xFF, _wire);
   wiresend(ba >> 8, _wire);
   _wire->endTransmission();
+}
+
+void Adafruit_MCP23017::writeGPIO(uint8_t b, uint8_t mask) {
+  if (DEBUG) {
+    SerialUSB.print("mcp writeGPIO(): ");
+    SerialUSB.print(i2caddr);
+    SerialUSB.print(":");
+    SerialUSB.print(b);
+    SerialUSB.print(":");
+    SerialUSB.println(mask);
+  }
+
+  writeRegister(b == 0 ? MCP23017_GPIOA : MCP23017_GPIOB, mask);
 }
 
 /*!
@@ -208,6 +229,14 @@ void Adafruit_MCP23017::writeGPIOAB(uint16_t ba) {
 void Adafruit_MCP23017::digitalWrite(uint8_t pin, uint8_t d) {
   uint8_t gpio;
   uint8_t bit = bitForPin(pin);
+  if (DEBUG) {
+    SerialUSB.print("mcp digitalWrite(): ");
+    SerialUSB.print(i2caddr);
+    SerialUSB.print(":");
+    SerialUSB.print(pin);
+    SerialUSB.print(":");
+    SerialUSB.println(d);
+  }
 
   // read the current GPIO output latches
   uint8_t regAddr = regForPin(pin, MCP23017_OLATA, MCP23017_OLATB);
