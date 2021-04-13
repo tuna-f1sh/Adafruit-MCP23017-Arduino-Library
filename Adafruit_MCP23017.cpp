@@ -35,7 +35,7 @@
 #include "WProgram.h"
 #endif
 
-#define DEBUG 1
+#define DEBUG 0
 
 // minihelper to keep Arduino backward compatibility
 static inline void wiresend(uint8_t x, TwoWire *theWire) {
